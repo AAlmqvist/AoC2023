@@ -17,11 +17,13 @@ def dijkstras(start, end, adj_mat):
     N = adj_mat.shape[0]
     h = [(0, start)]
     visited = np.zeros((N))
-    visited[start] = 1
     while len(h) > 0:
         dist, curr = heapq.heappop(h)
         if curr == end:
             return dist
+        if visited[curr] != 0:
+            continue
+        visited[curr] = 1
         for i in range(N):
             if visited[i] == 0 and adj_mat[curr, i] != 0:
                 heapq.heappush(h, (dist+adj_mat[curr, i], i))

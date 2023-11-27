@@ -12,7 +12,7 @@ def test_dijkstras():
     graph = np.array([[int(y) for y in x.split()] for x in GRAPH.split("\n")])
     res = dijkstras(0, 4, graph)
     if res != 20:
-        raise ValueError("djikstra's failed")
+        raise ValueError(f"djikstra's failed ({res}!={20})")
 
 if __name__ == "__main__":
     test_dijkstras()
