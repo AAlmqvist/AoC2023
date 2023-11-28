@@ -9,8 +9,15 @@ GRAPH = '''0 7 9 0 0 14
 14 0 2 0 9 0'''
 
 def test_dijkstras():
-    graph = np.array([[int(y) for y in x.split()] for x in GRAPH.split("\n")])
-    res = dijkstras(0, 4, graph)
+    graph = [[int(y) for y in x.split()] for x in GRAPH.split("\n")]
+    edge_dict = dict()
+    for i in range(len(graph)):
+        neighs = []
+        for ind, weight in enumerate(graph[i]):
+            if weight != 0:
+                neighs.append((ind, weight))
+        edge_dict[i] = neighs
+    res = dijkstras(0, 4, edge_dict)
     if res != 20:
         raise ValueError(f"djikstra's failed ({res}!={20})")
 
