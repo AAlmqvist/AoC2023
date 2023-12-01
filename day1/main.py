@@ -3,8 +3,6 @@ sys.path.append('../')
 
 from tools.parsing import read_by_line
 
-ALL_SUBS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-
 def parseData(s, part1=False):
     digits = []
     for k in range(len(s)):
