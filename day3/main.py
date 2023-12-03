@@ -39,20 +39,17 @@ def find_motorparts(nums, syms):
         adj = 0
         gear_ratio = 1
         for part, row, s_col, e_col in nums:
-            # Same row neighbors
-            if sym_row == row and sym_col in [s_col-1, e_col+1]:
-                part_sum += part
-                adj += 1
-                gear_ratio *= part
-                continue
-            # Check other rows
-            for i in [row-1, row+1]:
-                for j in range(s_col-1, e_col+2):
-                    if sym_row == i and sym_col == j:
+            for i in range(sym_row-1, sym_row+2):
+                found = False
+                for j in range(sym_col-1, sym_col+2):
+                    if i == row and s_col <= j and e_col >= j:
                         part_sum += part
                         adj += 1
                         gear_ratio *= part
-                        continue
+                        found = True
+                        break
+                if found:
+                    break
         if sym == "*" and adj == 2:
             gear_sum += gear_ratio
     return part_sum, gear_sum
