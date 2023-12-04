@@ -13,6 +13,15 @@ def parse_data(s):
     my_nbrs = [int(x) for x in numbers[1].split(" ") if x != ""]
     return (my_nbrs, win_nbrs)
 
+def count_matches(a: list, b: list):
+    count_matches = 0
+    for nbr in a:
+        for nbr2 in b:
+            if nbr == nbr2:
+                count_matches += 1
+                break
+    return count_matches
+
 def run():
     cards = read_by_line("input.txt", parse_func=parse_data)
 
@@ -21,18 +30,13 @@ def run():
     card_copies = [1 for x in cards]
 
     for i, (my_nbrs, win_nbrs) in enumerate(cards):
-        # Find the number of matches we have between 
-        count_matches = 0
-        for nbr in my_nbrs:
-            for nbr2 in win_nbrs:
-                if nbr == nbr2:
-                    count_matches += 1
-                    break
-        if count_matches > 0:
+        # Find the number of matches we have between
+        card_matches = count_matches(my_nbrs, win_nbrs)
+        if card_matches > 0:
             # Add the cards score to the total
-            total_points += 2 ** (count_matches-1)
+            total_points += 2 ** (card_matches-1)
             # Add one copy of each next card into the list of cards
-            start, end = i+1, min(i+1+count_matches, len(card_copies))
+            start, end = i+1, min(i+1+card_matches, len(card_copies))
             for j in range(start, end):
                 card_copies[j] += 1 * card_copies[i]
     print(total_points)
