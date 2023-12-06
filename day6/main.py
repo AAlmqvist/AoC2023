@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../')
+import numpy as np
 
 from tools.parsing import read_by_line, read_with_delimeter
 
@@ -9,25 +10,21 @@ def parse_data(s):
 def run():
     data = read_by_line("input.txt", parse_func=parse_data)
     time, dist = data[0], data[1]
+    # This problem is just solving the formula: x^2-t*x >= d (find x)
+    # Part 1
     race_mult = 1
     for i in range(len(time)):
         t, d = time[i], dist[i]
-        ds = [x*(t-x) for x in range(t)]
-        count = 0
-        for dx in ds:
-            if dx > d:
-                count += 1
-        race_mult *= count
+        lower_bound = int(np.ceil(t/2 - np.sqrt(t**2/4-d)))
+        upper_bound = int(np.floor(t/2 + np.sqrt(t**2/4-d)))
+        race_mult *= (upper_bound-lower_bound+1)
     print(race_mult)
+    # Part 2
     t1 = int(''.join([str(x) for x in time]))
     d1 = int(''.join([str(x) for x in dist]))
-    ds = [x*(t1-x) for x in range(t1)]
-    i, j = 0, len(ds)-1
-    while ds[i] <= d1:
-        i+=1
-    while ds[j] <= d1:
-        j-=1
-    print(j-i+1)
+    lower_bound = int(np.ceil(t1/2 - np.sqrt(t1**2/4-d1)))
+    upper_bound = int(np.floor(t1/2 + np.sqrt(t1**2/4-d1)))
+    print(upper_bound-lower_bound+1)
 
 if __name__ == "__main__":
     run()
