@@ -56,41 +56,27 @@ def get_hand_strength(hand, part1=False):
             return 2
     return 1
 
-def getTotalWinnings(data, part1=False):
+def get_total_winnings(data, part1=False):
     ranked_hands = []
     for hand, bid in data:
-        strength = get_hand_strength(hand, part1=part1)
-        ind = len(ranked_hands)
-        for i in range(len(ranked_hands)):
-            _, in_hand, in_str = ranked_hands[i]
-            if strength < in_str:
-                ind = i
-                break
-            if strength > in_str:
-                continue
-            found = False
-            str1 = [get_card_strength(c, part1=part1) for c in hand]
-            str2 = [get_card_strength(c, part1=part1) for c in in_hand]
-            found = False
-            for j in range(len(str1)):
-                if str1[j] < str2[j]:
-                    ind = i
-                    found = True
-                    break
-                if str1[j] > str2[j]:
-                    break
-            if found:
-                break
-        ranked_hands.insert(ind, (int(bid), hand, strength))
+        hand_strength = get_hand_strength(hand, part1=part1) * 15 **6
+        total_card_strength = sum([get_card_strength(hand[i], part1=part1) * 15**(len(hand)-i) for i in range(len(hand))])
+        # Since the max value for any single card or hand strength is 14
+        # we can create a integer that saves the specific values in base 15 where
+        # the hand score is the largest value, followed by the first card and so on.
+        # Ranking the cards after that is just a matter of sorting in descending order.
+        unique_hand_score = hand_strength + total_card_strength
+        ranked_hands.append((unique_hand_score, int(bid)))
+    ranked_hands.sort()
     total_winning = 0
-    for (rank, (bid, _, _)) in enumerate(ranked_hands):
+    for (rank, (_, bid)) in enumerate(ranked_hands):
         total_winning += (rank+1)*bid
     return total_winning
 
 def run():
     data = read_by_line("input.txt", parse_func=parse_data)
-    print(getTotalWinnings(data, part1=True))
-    print(getTotalWinnings(data))
+    print(get_total_winnings(data, part1=True))
+    print(get_total_winnings(data))
 
 if __name__ == "__main__":
     run()
