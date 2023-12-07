@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 import numpy as np
 
-from tools.parsing import read_by_line, read_with_delimeter
+from tools.parsing import read_by_line
 
 def parse_data(s):
     return [int(x) for x in s.split(": ")[1].split(" ") if x != '']
