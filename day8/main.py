@@ -1,6 +1,5 @@
 import sys
 sys.path.append('../')
-import time
 
 from tools.parsing import read_by_line, read_with_delimeter
 
