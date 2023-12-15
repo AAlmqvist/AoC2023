@@ -22,39 +22,6 @@ def fits(s: str, l: int) -> (bool, str):
         return False, ""
     return True, s[l+1:]
 
-# def find_layouts(s: str, expected: list[int]):
-#     # No chunks left to fit, check if rest can be just funcitoning space
-#     if not expected:
-#         if sum([1 if s[i] == '#' else 0 for i in range(len(s))]) > 0 :
-#             return 0
-#         return 1
-#     # cannot fit
-#     if expected[0] > len(s):
-#         return 0
-#     i = 0
-#     while i < len(s) and s[i] == '.':
-#         i += 1
-#     # Couldn't find any more space to fill
-#     if i == len(s):
-#         return 0
-#     new_s = s[i:]
-#     nbr_combs = 0
-#     # Check if we fit on current index
-#     does_fit, inner_s, _ = fits(new_s, expected[0])
-#     if does_fit:
-#         # Only one left, and it fit perfectly
-#         if len(new_s) == expected[0]:
-#             if len(expected) > 1:
-#                 return 0
-#             return 1
-#         if sum([0 if x=='.' else 1 for x in inner_s]) >= sum(expected[1:]):
-#             # Add underlying structures
-#             nbr_combs += find_layouts(inner_s, expected[1:])
-#     # Check any subsequent version if we have the option to
-#     if new_s[0] == '?' and sum([0 if x=='.' else 1 for x in new_s[1:]]) >= sum(expected):
-#         nbr_combs += find_layouts(new_s[1:], expected)
-#     return nbr_combs
-
 def find_layouts(s: str, s_ind: int, e_ind: int, expected: list[int], mem: list[list[tuple[int,str]]]):    
     # No chunks left to fit, check if rest can be just funcitoning space
     if not expected:
