@@ -11,36 +11,35 @@ def parse_data(s: str):
     return [int(x) for x in s if x != '']
 
 def dijkstras(start: int, end: int, edge_dict: dict, min_steps=4, max_steps=10):
-    h = [(0, d, 0, start, [start]) for d in range(len(DIRS))]
-    visited = [[[0 for _ in range(10)] for _ in DIRS] for x in edge_dict.keys()]
+    h = [(0, start, 0), (0, start, 1)]
+    visited = [[0 for _ in DIRS] for x in edge_dict.keys()]
     while len(h) > 0:
-        dist, dir, dir_count, curr, path = heapq.heappop(h)
+        dist, curr, dir = heapq.heappop(h)
         if curr == end:
-            return dist, path
-        if visited[curr][dir][dir_count-1] != 0:
+            return dist
+        if visited[curr][dir] != 0:
             continue
-        visited[curr][dir][dir_count-1] = 1
-        for new_dir, (node, dist_to_neigh) in enumerate(edge_dict[curr]):
-            # OOB
-            if dist_to_neigh > 10:
+        visited[curr][dir] = 1
+        for new_dir in [(dir+1)%4, (dir+3)%4]:
+            node = curr
+            notValid = False
+            extra_dist = 0
+            for _ in range(min_steps):
+                node, dist_to_neigh = edge_dict[node][new_dir]
+                if dist_to_neigh > 10:
+                    notValid = True
+                    break
+                extra_dist += dist_to_neigh
+            if notValid:
                 continue
-            # Need to walk a minimum 4 steps in any direction
-            if new_dir != dir and dir_count < min_steps:
-                continue
-            # Don't walk in the same path
-            if node in path:
-                continue
-            new_dir_count = 1
-            if new_dir == dir:
-                if dir_count + 1 > max_steps:
-                    continue
-                new_dir_count = dir_count + 1
-            new_path = path.copy()
-            if visited[node][new_dir][new_dir_count-1] == 0:
-                new_path.append(node)
-                heapq.heappush(h, (dist+dist_to_neigh, new_dir, new_dir_count, node, new_path))
-    return -1, []
-
+            heapq.heappush(h, (dist+extra_dist, node, new_dir))
+            for _ in range(min_steps, max_steps):
+                node, dist_to_neigh = edge_dict[node][new_dir]
+                if dist_to_neigh > 10:
+                    break
+                extra_dist += dist_to_neigh
+                heapq.heappush(h, (dist+extra_dist, node, new_dir))
+    return -1
 
 def map_neighbors(x: np.ndarray):
     r, c = x.shape
@@ -60,9 +59,9 @@ def run():
     data = np.array(read_by_line("input.txt", parse_func=parse_data))
     heat_mapping = map_neighbors(data)
     end = len(heat_mapping.keys())-1
-    dist, _ = dijkstras(0, end, heat_mapping, min_steps=1, max_steps=3)
+    dist = dijkstras(0, end, heat_mapping, min_steps=1, max_steps=3)
     print(dist)
-    dist2, _ = dijkstras(0, end, heat_mapping)
+    dist2 = dijkstras(0, end, heat_mapping)
     print(dist2)
 
 if __name__ == "__main__":
